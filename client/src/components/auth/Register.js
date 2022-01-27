@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import AlertContext from "../../context/alert/alertContext";
 import AuthContext from "../../context/auth/authContext";
 
@@ -6,14 +7,17 @@ const Register = () => {
 	const alertContext = useContext(AlertContext);
 	const authContext = useContext(AuthContext);
 	const { setAlert } = alertContext;
-	const { register, error, clearErrors } = authContext;
+	const { register, error, clearErrors, isAuthenticated } = authContext;
 
 	useEffect(() => {
+		//props.history.push does not work in react router dom updated version so use Navigate
+
 		if (error === "User already exists.") {
 			setAlert(error, "danger");
 			clearErrors();
 		}
-	}, [error]);
+		// eslint-disable-next-line
+	}, [error, isAuthenticated]);
 
 	const [user, setUser] = useState({
 		name: "",
@@ -41,6 +45,8 @@ const Register = () => {
 			});
 		}
 	};
+
+	if (isAuthenticated) return <Navigate to='/' />;
 
 	return (
 		<div className='form-container'>
